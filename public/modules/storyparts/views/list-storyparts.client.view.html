@@ -1,0 +1,19 @@
+<section data-ng-controller="StorypartsController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Storyparts</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="storypart in storyparts" data-ng-href="#!/storyparts/{{storypart._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="storypart.created | date:'medium'"></span>
+				by
+				<span data-ng-bind="storypart.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="storypart.name"></h4>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!storyparts.$resolved || storyparts.length">
+    	No Storyparts yet, why don't you <a href="/#!/storyparts/create">create one</a>?
+    </div>
+</section>
