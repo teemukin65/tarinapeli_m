@@ -1,19 +1,29 @@
 <section data-ng-controller="HomeController">
-	<div class="jumbotron text-center">
+    <div class="jumbotron text-center">
 
-		<br>
-		<div class="row">
-			<p class="lead">
-				Tarinapeli
-			</p>
-		</div>
-		<div class="row">
-			<p>
-				<a  ui-sref="firstPart" class="btn btn-primary btn-lg"  >Aloita peli</a>
-			</p>
-		</div>
-	</div>
+        <br>
 
-	<div> <ui-view /> </div>
+        <div class="row">
+            <p class="lead">
+                Tarinapeli
+            </p>
+        </div>
+    </div>
+
+    <div class="row" data-ng-show="!authentication.user">
+        <h1>
+            <span>  <a href="/#!/signup" >Kirjaudu sisään</a>, niin pääset mukaan Sanapeliin  </span>
+        </h1>
+    </div>
+
+    <div class="row" data-ng-show="authentication.user">
+        <p>
+            <a ui-sref="createStory.firstPart" class="btn btn-primary btn-lg">Aloita peli</a>
+        </p>
+    </div>
+
+    <div>
+        <ui-view/>
+    </div>
 
 </section>

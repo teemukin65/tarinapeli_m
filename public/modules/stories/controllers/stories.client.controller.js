@@ -1,20 +1,23 @@
 'use strict';
 
 // Stories controller
-angular.module('stories').controller('StoriesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stories',
-	function($scope, $stateParams, $location, Authentication, Stories) {
+angular.module('stories').controller('StoriesController',
+	['$scope', '$stateParams', '$location', 'Authentication','Users', 'Stories','currentStory',
+	function($scope, $stateParams, $location, Authentication, Users, Stories, currentStory) {
 		$scope.authentication = Authentication;
 
 		// Create new Story
 		$scope.create = function() {
 			// Create new Story object
-			var story = new Stories ({
-				name: this.name
+			var newStory = new Stories ({
+				creator: Authentication.user._id,
+				currentWriter: Authentication.user._id,
+				created: Date.now(),
 			});
 
 			// Redirect after save
-			story.$save(function(response) {
-				$location.path('stories/' + response._id);
+			newStory.$save(function(response) {
+				$location.path('stories/' + response._id+'/storyparts/first');
 
 				// Clear form fields
 				$scope.name = '';
@@ -24,17 +27,17 @@ angular.module('stories').controller('StoriesController', ['$scope', '$statePara
 		};
 
 		// Remove existing Story
-		$scope.remove = function(story) {
-			if ( story ) { 
-				story.$remove();
+		$scope.remove = function(aStory) {
+			if ( aStory ) {
+				aStory.$remove();
 
 				for (var i in $scope.stories) {
-					if ($scope.stories [i] === story) {
+					if ($scope.stories [i] === aStory) {
 						$scope.stories.splice(i, 1);
 					}
 				}
 			} else {
-				$scope.story.$remove(function() {
+				currentStory.$remove(function() {
 					$location.path('stories');
 				});
 			}
@@ -42,10 +45,10 @@ angular.module('stories').controller('StoriesController', ['$scope', '$statePara
 
 		// Update existing Story
 		$scope.update = function() {
-			var story = $scope.story;
+			var storyToUpdate = currentStory;
 
-			story.$update(function() {
-				$location.path('stories/' + story._id);
+			storyToUpdate.$update(function(updatedStory) {
+				$location.path('stories/' + storyToUpdate._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -58,9 +61,13 @@ angular.module('stories').controller('StoriesController', ['$scope', '$statePara
 
 		// Find existing Story
 		$scope.findOne = function() {
-			$scope.story = Stories.get({ 
+			currentStory = Stories.get({
 				storyId: $stateParams.storyId
 			});
+		};
+
+		$scope.findUserById = function(id){
+			return Users.get({userId:id});
 		};
 	}
 ]);

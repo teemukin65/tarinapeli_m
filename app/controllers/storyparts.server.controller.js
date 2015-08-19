@@ -32,6 +32,15 @@ exports.create = function(req, res) {
 exports.read = function(req, res) {
 	res.jsonp(req.storypart);
 };
+/**
+ * Show the last line of the Storypart
+ * @type {res|*}
+ */
+
+
+exports.getEndOfPart = function( req,res){
+	res.jsonp({row:req.storypart.rows[2]});
+};
 
 /**
  * Update a Storypart

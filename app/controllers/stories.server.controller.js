@@ -100,8 +100,8 @@ exports.storyByID = function(req, res, next, id) {
  * Story authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.story.user.id !== req.user.id) {
-		return res.status(403).send('User is not authorized');
-	}
+	//if (req.story.currentWriter.id !== req.user.id) {
+	//	return res.status(403).send('User is not authorized');
+	//}
 	next();
 };

@@ -1,13 +1,17 @@
 'use strict';
 
 // Storyparts controller
-angular.module('storyparts').controller('StorypartsController', ['$scope', '$log', '$stateParams', '$location', 'Authentication', 'Storyparts',
-	function($scope, $log, $stateParams, $location, Authentication, Storyparts) {
+angular.module('storyparts').controller('StorypartsController',
+	['$scope', '$log', '$stateParams', '$state','$location', 'Authentication', 'Storyparts','currentStory', 'previousPartEnd',
+	function($scope, $log, $stateParams, $state, $location, Authentication, Storyparts,currentStory, previousPartEnd) {
 		$scope.authentication = Authentication;
 
 		$scope.newStoryPartFields={};
 
-		// Create new Storypart
+		//$scope.previousPartLastLine = previousPartEnd;
+		$scope.lastLineOfPrevious = previousPartEnd;
+
+			// Create new Storypart
 		$scope.create = function() {
 			// Create new Storypart object
 			var storypart = new Storyparts ({
@@ -17,8 +21,9 @@ angular.module('storyparts').controller('StorypartsController', ['$scope', '$log
 			);
 
 			// Redirect after save
-			storypart.$save(function(response) {
-				$location.path('storyparts/' + response._id);
+			storypart.$save(function(response){
+				currentStory.storyparts.push(response._id);
+				$state.go('createStory.nextPart',{previousPartId:response._id});
 
 				// Clear form fields
 				$scope.name = '';
@@ -44,12 +49,23 @@ angular.module('storyparts').controller('StorypartsController', ['$scope', '$log
 			}
 		};
 
+
+
+		$scope.lastPartReady = function(){
+			$log.debug('lastPartReady');
+		};
+
+		$scope.$on('$stateChangeError', function(event ){
+			console.log('stateChangeError');
+		});
+
 		// Update existing Storypart
 		$scope.update = function() {
 			var storypart = $scope.storypart;
 
-			storypart.$update(function() {
-				$location.path('storyparts/' + storypart._id);
+			storypart.$update(function(response) {
+				currentStory.storyparts.push(response._id);
+				$state.go('createStory.nextPart',{previousPartId:response._id});
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});

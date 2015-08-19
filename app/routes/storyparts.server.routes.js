@@ -14,6 +14,9 @@ module.exports = function(app) {
 		.put(users.requiresLogin, storyparts.hasAuthorization, storyparts.update)
 		.delete(users.requiresLogin, storyparts.hasAuthorization, storyparts.delete);
 
+	app.route('/storyparts/:storypartId/lastLine')
+		.get(storyparts.getEndOfPart);
+
 	// Finish by binding the Storypart middleware
 	app.param('storypartId', storyparts.storypartByID);
 };

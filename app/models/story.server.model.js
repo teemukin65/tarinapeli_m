@@ -10,20 +10,25 @@ var mongoose = require('mongoose'),
  * Story Schema
  */
 var StorySchema = new Schema({
-	name: {
-		type: String,
-		default: '',
-		required: 'Please fill Story name',
-		trim: true
-	},
+
 	created: {
 		type: Date,
 		default: Date.now
 	},
-	user: {
+	creator: {
 		type: Schema.ObjectId,
 		ref: 'User'
-	}
+	},
+	currentWriter: {
+		type: Schema.ObjectId,
+		ref: 'User'
+	},
+	storyparts:[{
+		type: Schema.ObjectId,
+		ref: 'Storypart'
+
+	}]
+
 });
 
 mongoose.model('Story', StorySchema);
