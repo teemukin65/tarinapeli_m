@@ -2,9 +2,37 @@
 
 // Stories controller
 angular.module('stories').controller('StoriesController',
-	['$scope', '$stateParams', '$location', 'Authentication','Users', 'Stories','currentStory',
-	function($scope, $stateParams, $location, Authentication, Users, Stories, currentStory) {
+    ['$scope', '$stateParams', '$location', 'Authentication', 'Users', 'Stories', 'Storyparts', 'currentStory',
+        function ($scope, $stateParams, $location, Authentication, Users, Stories, Storyparts, currentStory) {
 		$scope.authentication = Authentication;
+
+
+            //
+            // controller functions used in Tarinapeli
+            //
+
+
+            var _fillCurrentStoryparts = function (storyparts) {
+                angular.forEach(storyparts, function (part, index, parts) {
+                    Storyparts.get({'storypartId': part}).$promise.then(function (partFromServer) {
+                        currentStory.storyparts[index] = angular.extend({'_id': part}, partFromServer);
+                    });
+                });
+            };
+
+
+            // fill the story parts  to current story from the MongoDB
+            if (currentStory && currentStory.$promise) {
+                currentStory.$promise.then(function (resolvedStory) {
+                    _fillCurrentStoryparts(resolvedStory.storyparts);
+
+                });
+            } else if (currentStory && currentStory.storyparts) {
+                _fillCurrentStoryparts(currentStory.storyparts);
+            }
+
+            $scope.story = currentStory;
+
 
 		// Create new Story
 		$scope.create = function() {
@@ -25,6 +53,10 @@ angular.module('stories').controller('StoriesController',
 				$scope.error = errorResponse.data.message;
 			});
 		};
+
+            //
+            // Surplus CRUD functions...
+            //
 
 		// Remove existing Story
 		$scope.remove = function(aStory) {

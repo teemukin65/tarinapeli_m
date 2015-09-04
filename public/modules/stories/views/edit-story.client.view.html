@@ -2,7 +2,8 @@
     <div class="page-header">
         <h1>Tarina </h1>
     </div>
-    <div> Tarinan aloitti: {{authentication.user.displayName}} , {{currentStory.created | date}}</div>
+    <div> Tarinan aloitti: {{authentication.user.displayName}} , {{story.created | date}}</div>
+    <div>Nyt kirjoitetaan osaa nro: {{story.storyparts.length+1}}</div>
     <div class="col-md-12">
         <form class="form-horizontal" data-ng-submit="update()" novalidate>
 

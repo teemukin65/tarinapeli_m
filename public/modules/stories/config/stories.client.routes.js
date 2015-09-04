@@ -7,6 +7,12 @@ angular.module('stories').config(['$stateProvider',
 		$stateProvider.
 			state('listStories', {
 				url: '/stories',
+				controller: 'StoriesController',
+				resolve: {
+					currentStory: function () {
+						return {};
+					}
+				},
 				templateUrl: 'modules/stories/views/list-stories.client.view.html'
 			}).
 			state('createStory', {
@@ -28,18 +34,15 @@ angular.module('stories').config(['$stateProvider',
 			}).
 			state('viewStory', {
 				url: '/stories/:storyId',
-				templateUrl: 'modules/stories/views/view-story.client.view.html'
-			}).
-			state('storyUnderway', {
-				url: '/stories/:storyId/edit',
 				controller: 'StoriesController',
 				resolve:{
 					currentStory: ['$stateParams','Stories', function($stateParams, Stories){
-						return Stories.get($stateParams.storyId);
+						return Stories.get({storyId: $stateParams.storyId});
 					}]
 				},
-				templateUrl: 'modules/stories/views/edit-story.client.view.html'
+				templateUrl: 'modules/stories/views/view-story.client.view.html'
 			})
+
 		;
 	}
 ]);

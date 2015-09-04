@@ -11,49 +11,37 @@ angular.module('storyparts').controller('StorypartsController',
 		//$scope.previousPartLastLine = previousPartEnd;
 		$scope.lastLineOfPrevious = previousPartEnd;
 
-			// Create new Storypart
-		$scope.create = function() {
+        // Create new Storypart, and redirect where needed
+        // param: last -- if not falsy, move viewStory state.
+        $scope.create = function (last) {
 			// Create new Storypart object
 			var storypart = new Storyparts ({
 					rows:$scope.newStoryPartFields.rows,
-					user: Authentication.user.id
+                    user: Authentication.user._id
 				}
 			);
 
 			// Redirect after save
 			storypart.$save(function(response){
 				currentStory.storyparts.push(response._id);
-				$state.go('createStory.nextPart',{previousPartId:response._id});
+                currentStory.$update();
+                if (last) {
+                    $state.go('viewStory', {storyId: currentStory._id});
+                } else {
+                    $state.go('createStory.nextPart', {previousPartId: response._id});
+                }
 
 				// Clear form fields
-				$scope.name = '';
+                $scope.newStoryPartFields = {};
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
 
-		// Remove existing Storypart
-		$scope.remove = function(storypart) {
-			if ( storypart ) { 
-				storypart.$remove();
-
-				for (var i in $scope.storyparts) {
-					if ($scope.storyparts [i] === storypart) {
-						$scope.storyparts.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.storypart.$remove(function() {
-					$location.path('storyparts');
-				});
-			}
-		};
 
 
 
-		$scope.lastPartReady = function(){
-			$log.debug('lastPartReady');
-		};
+
 
 		$scope.$on('$stateChangeError', function(event ){
 			console.log('stateChangeError');
@@ -65,11 +53,32 @@ angular.module('storyparts').controller('StorypartsController',
 
 			storypart.$update(function(response) {
 				currentStory.storyparts.push(response._id);
+                currentStory.update();
 				$state.go('createStory.nextPart',{previousPartId:response._id});
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
+
+        // Following are surplus CRUD methods from the template:
+
+        // Remove existing Storypart
+        $scope.remove = function (storypart) {
+            if (storypart) {
+                storypart.$remove();
+
+                for (var i in $scope.storyparts) {
+                    if ($scope.storyparts [i] === storypart) {
+                        $scope.storyparts.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.storypart.$remove(function () {
+                    $location.path('storyparts');
+                });
+            }
+        };
+
 
 		// Find a list of Storyparts
 		$scope.find = function() {

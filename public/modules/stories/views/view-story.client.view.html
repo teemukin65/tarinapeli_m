@@ -1,21 +1,27 @@
-<section data-ng-controller="StoriesController" data-ng-init="findOne()">
+<section>
 	<div class="page-header">
-		<h1 data-ng-bind="story.name"></h1>
+        <h1>Tarina aloitettu {{story.created | date }} klo {{story.created | date:'H.m'}}</h1>
 	</div>
-	<div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == story.user._id))">
-		<a class="btn btn-primary" href="/#!/stories/{{story._id}}/edit">
-			<i class="glyphicon glyphicon-edit"></i>
-		</a>
-		<a class="btn btn-primary" data-ng-click="remove();">
+    <div class="pull-right" data-ng-show=" ((authentication.user) && (authentication.user._id == story.user._id))">
+
+    <a class="btn btn-primary" data-ng-click="remove();">
 			<i class="glyphicon glyphicon-trash"></i>
 		</a>
 	</div>
-	<small>
-		<em class="text-muted">
-			Posted on
-			<span data-ng-bind="story.created | date:'mediumDate'"></span>
-			by
-			<span data-ng-bind="story.user.displayName"></span>
-		</em>
-	</small>
+
+    <ul class="list-group" ng-repeat="part in story.storyparts">
+
+        <li class="list-group-item">
+
+            <span class="badge"> Osa {{$index+1}}:kirjoitettu {{part.created| date:'H.m'}}</span>
+
+
+            <div ng-repeat="row in part.rows track by $index">
+                <span>{{row}}</span>
+
+            </div>
+        </li>
+
+
+    </ul>
 </section>

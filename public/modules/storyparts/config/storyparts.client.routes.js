@@ -29,18 +29,6 @@ angular.module('storyparts').config(['$stateProvider',
                 controller: 'StorypartsController',
                 templateUrl: 'modules/storyparts/views/create-next-storypart.client.view.html'
 
-            }).
-			state('createStorypart', {
-				url: '/storyparts/create',
-				templateUrl: 'modules/storyparts/views/create-storypart.client.view.html'
-			}).
-			state('viewStorypart', {
-				url: '/storyparts/:storypartId',
-				templateUrl: 'modules/storyparts/views/view-storypart.client.view.html'
-			}).
-			state('editStorypart', {
-				url: '/storyparts/:storypartId/edit',
-				templateUrl: 'modules/storyparts/views/edit-storypart.client.view.html'
 			});
 	}]
 );
