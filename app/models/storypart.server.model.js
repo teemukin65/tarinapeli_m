@@ -10,10 +10,8 @@ var mongoose = require('mongoose'),
  * Storypart Schema
  */
 var StorypartSchema = new Schema({
-	rows:[ {
+    rows: [{
 		type: String,
-		default: '',
-		maxlength:80,
 		trim: false
 	}],
 	created: {
@@ -21,9 +19,19 @@ var StorypartSchema = new Schema({
 		default: Date.now
 	},
 	user: {
+        required: 'Creator for Storypart required',
 		type: Schema.ObjectId,
 		ref: 'User'
 	}
 });
+
+StorypartSchema.path('rows').validate(function (rows) {
+    if (rows && rows.length === 3) {
+        return true;
+    } else {
+        return false;
+    }
+}, '3 riviä tarvitaan');
+
 
 mongoose.model('Storypart', StorypartSchema);

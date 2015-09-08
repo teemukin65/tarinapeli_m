@@ -3,7 +3,7 @@
 module.exports = {
 	app: {
 		title: 'tarinapeli_m',
-		description: 'Story Game - See one - write three ',
+		description: 'Story Game - See a line - write your three ',
 		keywords: 'Story, collaborative writing, game'
 	},
 	port: process.env.PORT || 3000,

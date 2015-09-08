@@ -3,7 +3,7 @@
         <h1>Jatka tarinaa seuraavat 3 riviä</h1>
     </div>
     <div class="col-md-12">
-        <div class="form-group">
+        <ng-form name="storyPartForm" class="form-group">
 
             <div class="row form-group">
                 <input class="form-control" id="previousRowField" type="text" data-ng-model="lastLineOfPrevious.row"
@@ -13,19 +13,23 @@
 
                 <div class="controls">
                     <input placeholder="{{$index+1}} rivi" id="rowField{{$index+1}}"
-                           type="text" maxlength="80"
+                           type="text" ng-maxlength="80" ng-minlength="3"
+                           required
                            data-ng-model="newStoryPartFields.rows[$index]" class="form-control" required>
                 </div>
                 <br/>
             </div>
+            <div class=" row form-group">
+                <input type="button" ng-click="create()" ng-disabled="storyPartForm.$invalid"
+                       value="Seuraavan vuoro jatkaa" class="btn btn-info col-md-2"/>
+                <input type="button" value="Tarina on valmis" class="btn btn-success col-md-offset-8 col-md-2"
+                       data-ng-click="create(true)"
+                       ng-disabled=" (storyPartForm.$invalid  || story.creator !== authentication.user._id) "/>
+            </div>
 
-        </div>
+        </ng-form>
 
-        <div class=" row form-group">
-            <input type="button" ng-click="create()" value="Seuraavan vuoro jatkaa" class="btn btn-info col-md-2"/>
-            <input type="button" value="Tarina on valmis" class="btn btn-success col-md-offset-8 col-md-2"
-                   data-ng-click="create(true)"/>
-        </div>
+
         <div data-ng-show="error" class="text-danger">
             <strong data-ng-bind="error"></strong>
         </div>

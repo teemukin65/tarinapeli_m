@@ -5,10 +5,10 @@
     <div> Tarinan aloitti: {{authentication.user.displayName}} , {{story.created | date}}</div>
     <div>Nyt kirjoitetaan osaa nro: {{story.storyparts.length+1}}</div>
     <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update()" novalidate>
+        <ng-form class="form-horizontal" data-ng-submit="update()" novalidate>
 
             <ui-view></ui-view>
 
-        </form>
+        </ng-form>
     </div>
 </section>

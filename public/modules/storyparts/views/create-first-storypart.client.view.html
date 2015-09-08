@@ -2,7 +2,7 @@
     <div class="page-header">
         <h1>Kirjoita tarinan ensimmäiset 3 riviä</h1>
     </div>
-    <div class="col-md-12">
+    <ng-form name="storyPartForm" class="col-md-12">
 
         <fieldset>
 
@@ -10,15 +10,17 @@
 
                 <div class="controls">
                     <input placeholder="{{$index+1}} rivi" name="rowField{{$index+1}}" id="rowField{{$index+1}}"
-                           type="text" maxlength="80"
-                           data-ng-model="newStoryPartFields.rows[$index]" class="form-control" required>
+                           type="text" ng-maxlength="80" ng-minlength="3"
+                           required
+                           data-ng-model="newStoryPartFields.rows[$index]" class="form-control">
                 </div>
                 <br/>
             </div>
 
 
             <div class="form-group">
-                <input type="button" ng-click="create()" name="firstPartSubmitButton" value="Seuraavan vuoro jatkaa"
+                <input type="button" ng-click="create()" ng-disabled="storyPartForm.$invalid"
+                       name="firstPartSubmitButton" value="Seuraavan vuoro jatkaa"
                        class="btn btn-default"/>
             </div>
             <div data-ng-show="error" class="text-danger">
@@ -26,5 +28,5 @@
             </div>
         </fieldset>
 
-    </div>
+    </ng-form>
 </section>
