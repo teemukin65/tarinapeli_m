@@ -29,8 +29,9 @@ describe('Story Model Unit Tests:', function() {
 
 		user.save(function() { 
 			story = new Story({
-				name: 'Story Name',
-				user: user
+				storyParts: [],
+				creator: user._id,
+				currentWriter: user._id,
 			});
 
 			done();
@@ -45,8 +46,8 @@ describe('Story Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be able to show an error when try to save without name', function(done) { 
-			story.name = '';
+		it('should be able to show an error when try to save without creator', function (done) {
+			story.creator = '';
 
 			return story.save(function(err) {
 				should.exist(err);

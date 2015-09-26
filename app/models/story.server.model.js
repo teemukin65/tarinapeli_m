@@ -17,6 +17,7 @@ var StorySchema = new Schema({
 	},
 	creator: {
 		type: Schema.ObjectId,
+		required: 'Creator needs to be defined for Story',
 		ref: 'User'
 	},
 	currentWriter: {
@@ -32,3 +33,4 @@ var StorySchema = new Schema({
 });
 
 mongoose.model('Story', StorySchema);
+//module.exports = StorySchema; // needed for mongoose2pojo runs...

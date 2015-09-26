@@ -10,9 +10,11 @@ module.exports = function(app) {
 		.post(users.requiresLogin, storygames.create);
 
 	app.route('/storygames/:storygameId')
-		.get(storygames.read)
-		.put(users.requiresLogin, storygames.hasAuthorization, storygames.update)
-		.delete(users.requiresLogin, storygames.hasAuthorization, storygames.delete);
+		.get(users.requiresLogin, storygames.read)
+		.put(users.requiresLogin, storygames.hasPlayerAuthorization, storygames.update)
+		.delete(users.requiresLogin, storygames.hasOwnerAuthorization, storygames.delete);
+	app.route('/storygames/:storygameId/players')
+		.get(users.requiresLogin, storygames.listPlayers);
 
 	// Finish by binding the Storygame middleware
 	app.param('storygameId', storygames.storygameByID);

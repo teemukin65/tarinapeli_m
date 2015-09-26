@@ -1,7 +1,7 @@
 {
 	"name": "tarinapeli-m",
 	"version": "0.0.1",
-	"description": "Story Game - See one - write three ",
+  "description": "Story Game - See a line - write three , get a story ",
 	"dependencies": {
 		"bootstrap": "~3",
 		"angular": "~1.2",

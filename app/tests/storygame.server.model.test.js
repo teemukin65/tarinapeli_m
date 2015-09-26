@@ -29,8 +29,11 @@ describe('Storygame Model Unit Tests:', function() {
 
 		user.save(function() { 
 			storygame = new Storygame({
-				name: 'Storygame Name',
-				user: user
+				gameTitle: 'Storygame Name',
+				gameDescription: 'This is a longer description of common rules ',
+				gameStatus: 'defining',
+				players: [],
+				stories: []
 			});
 
 			done();
@@ -45,8 +48,8 @@ describe('Storygame Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be able to show an error when try to save without name', function(done) { 
-			storygame.name = '';
+		it('should be able to show an error when try to save without title', function (done) {
+			storygame.gameTitle = '';
 
 			return storygame.save(function(err) {
 				should.exist(err);

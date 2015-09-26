@@ -11,7 +11,7 @@ module.exports = function(app) {
 
 	app.route('/stories/:storyId')
 		.get(stories.read)
-		.put(users.requiresLogin, stories.hasAuthorization, stories.update)
+		.put(users.requiresLogin, stories.hasCurrentWriterAuthorization, stories.update)
 		.delete(users.requiresLogin, stories.hasAuthorization, stories.delete);
 
 	// Finish by binding the Story middleware

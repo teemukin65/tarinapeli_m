@@ -29,7 +29,7 @@ describe('Storypart Model Unit Tests:', function() {
 
 		user.save(function() { 
 			storypart = new Storypart({
-				name: 'Storypart Name',
+				rows: ['1st line', '2nd line', '3rd line'],
 				user: user
 			});
 
@@ -45,10 +45,17 @@ describe('Storypart Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be able to show an error when try to save without name', function(done) { 
-			storypart.name = '';
+		it('should be able to show an error when try to save without user', function (done) {
+			storypart.user = null;
 
 			return storypart.save(function(err) {
+				should.exist(err);
+				done();
+			});
+		});
+		it('should be able to show error when try to save with too short row', function (done) {
+			storypart.rows[1] = 'oo';
+			return storypart.save(function (err) {
 				should.exist(err);
 				done();
 			});

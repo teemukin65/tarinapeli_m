@@ -72,8 +72,8 @@ exports.delete = function(req, res) {
 /**
  * List of Stories
  */
-exports.list = function(req, res) { 
-	Story.find().sort('-created').populate('user', 'displayName').exec(function(err, stories) {
+exports.list = function(req, res) {
+	Story.find().sort('-created').populate('storyparts').exec(function (err, stories) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -99,8 +99,16 @@ exports.storyByID = function(req, res, next, id) {
 /**
  * Story authorization middleware
  */
+exports.hasCurrentWriterAuthorization = function (req, res, next) {
+	if (req.story.currentWriter.toJSON() !== req.user.id) {
+		return res.status(403).send('User is not authorized');
+	}
+	next();
+};
+
 exports.hasAuthorization = function(req, res, next) {
-	//if (req.story.currentWriter.id !== req.user.id) {
+	//TBD
+	//if (req.story.currentWriter !== req.user.id) {
 	//	return res.status(403).send('User is not authorized');
 	//}
 	next();

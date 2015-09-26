@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Storygame = mongoose.model('Storygame'),
+	Users = mongoose.model('User'),
 	_ = require('lodash');
 
 /**
@@ -85,10 +86,18 @@ exports.list = function(req, res) {
 };
 
 /**
+ * Player handling
+ */
+
+exports.listPlayers = function (req, res) {
+	res.jsonp(req.storygame.players);
+};
+
+/**
  * Storygame middleware
  */
-exports.storygameByID = function(req, res, next, id) { 
-	Storygame.findById(id).populate('user', 'displayName').exec(function(err, storygame) {
+exports.storygameByID = function(req, res, next, id) {
+	Storygame.findById(id).populate('players stories', '-player.user.password -players.user.salt').exec(function (err, storygame) {
 		if (err) return next(err);
 		if (! storygame) return next(new Error('Failed to load Storygame ' + id));
 		req.storygame = storygame ;
@@ -99,9 +108,19 @@ exports.storygameByID = function(req, res, next, id) {
 /**
  * Storygame authorization middleware
  */
-exports.hasAuthorization = function(req, res, next) {
-	if (req.storygame.user.id !== req.user.id) {
-		return res.status(403).send('User is not authorized');
+exports.hasOwnerAuthorization = function (req, res, next) {
+	if (req.storygame.gameAdmin.toJSON() !== req.user.id) {
+		return res.status(403).send('User is not authorized admin');
 	}
 	next();
 };
+
+exports.hasPlayerAuthorization = function (req, res, next) {
+	console.log('hasPlayerAuthorization: players:' + req.storygame.players + ' user id:' + req.user.id);
+	//if ((req.storygame.players && _.indexOf(req.storygame.players , req.user.id) === -1) ) {
+	//	return res.status(403).send('User is not authorized player');
+	//}
+	next();
+};
+
+

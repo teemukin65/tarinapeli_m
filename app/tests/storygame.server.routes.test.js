@@ -38,7 +38,11 @@ describe('Storygame CRUD tests', function() {
 		// Save a user to the test db and create new Storygame
 		user.save(function() {
 			storygame = {
-				name: 'Storygame Name'
+				gameTitle: 'Storygame Name',
+				gameDescription: 'This is a longer description of common rules ',
+				gameStatus: 'defining',
+				players: [],
+				stories: []
 			};
 
 			done();
@@ -192,7 +196,7 @@ describe('Storygame CRUD tests', function() {
 			request(app).get('/storygames/' + storygameObj._id)
 				.end(function(req, res) {
 					// Set assertion
-					res.body.should.be.an.Object.with.property('name', storygame.name);
+					res.body.should.be.an.Object.with.property('gameTitle', storygame.gameTitle);
 
 					// Call the assertion callback
 					done();

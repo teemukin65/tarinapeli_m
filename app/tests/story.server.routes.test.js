@@ -38,7 +38,9 @@ describe('Story CRUD tests', function() {
 		// Save a user to the test db and create new Story
 		user.save(function() {
 			story = {
-				name: 'Story Name'
+				storyparts: [],
+				creator: user._id,
+				currentWriter: user._id,
 			};
 
 			done();
@@ -74,8 +76,8 @@ describe('Story CRUD tests', function() {
 								var stories = storiesGetRes.body;
 
 								// Set assertions
-								(stories[0].user._id).should.equal(userId);
-								(stories[0].name).should.match('Story Name');
+								(stories[0].creator).should.equal(userId);
+
 
 								// Call the assertion callback
 								done();
@@ -94,9 +96,10 @@ describe('Story CRUD tests', function() {
 			});
 	});
 
-	it('should not be able to save Story instance if no name is provided', function(done) {
+	it('should not be able to save Story instance if no creator id is provided', function (done) {
 		// Invalidate name field
-		story.name = '';
+
+		story.creator = null;
 
 		agent.post('/auth/signin')
 			.send(credentials)
@@ -108,13 +111,14 @@ describe('Story CRUD tests', function() {
 				// Get the userId
 				var userId = user.id;
 
+
 				// Save a new Story
 				agent.post('/stories')
 					.send(story)
 					.expect(400)
 					.end(function(storySaveErr, storySaveRes) {
 						// Set message assertion
-						(storySaveRes.body.message).should.match('Please fill Story name');
+						(storySaveRes.body.message).should.match('Creator needs to be defined for Story');
 						
 						// Handle Story save error
 						done(storySaveErr);
@@ -141,8 +145,11 @@ describe('Story CRUD tests', function() {
 						// Handle Story save error
 						if (storySaveErr) done(storySaveErr);
 
-						// Update Story name
-						story.name = 'WHY YOU GOTTA BE SO MEAN?';
+						// add a story part
+
+						//fake Object id:
+						story.storyparts.push('ffffffffffffffffffffffff');
+
 
 						// Update existing Story
 						agent.put('/stories/' + storySaveRes.body._id)
@@ -154,7 +161,6 @@ describe('Story CRUD tests', function() {
 
 								// Set assertions
 								(storyUpdateRes.body._id).should.equal(storySaveRes.body._id);
-								(storyUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
 
 								// Call the assertion callback
 								done();
@@ -192,7 +198,7 @@ describe('Story CRUD tests', function() {
 			request(app).get('/stories/' + storyObj._id)
 				.end(function(req, res) {
 					// Set assertion
-					res.body.should.be.an.Object.with.property('name', story.name);
+					res.body.should.be.an.Object.with.property('storyparts', []);
 
 					// Call the assertion callback
 					done();

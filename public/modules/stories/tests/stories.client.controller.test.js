@@ -46,14 +46,18 @@
 
 			// Initialize the Stories controller.
 			StoriesController = $controller('StoriesController', {
-				$scope: scope
+				$scope: scope,
+				currentStory: {}
 			});
 		}));
 
 		it('$scope.find() should create an array with at least one Story object fetched from XHR', inject(function(Stories) {
 			// Create sample Story using the Stories service
 			var sampleStory = new Stories({
-				name: 'New Story'
+				created: Date.now(),
+				creator: '525a8422f6d0f87f0e407a33',
+				storyparts: ['525a8422f6d0f87f0e407a34', '525a8422f6d0f87f0e407a35']
+
 			});
 
 			// Create a sample Stories array that includes the new Story
@@ -73,7 +77,10 @@
 		it('$scope.findOne() should create an array with one Story object fetched from XHR using a storyId URL parameter', inject(function(Stories) {
 			// Define a sample Story object
 			var sampleStory = new Stories({
-				name: 'New Story'
+				created: Date.now(),
+				creator: '525a8422f6d0f87f0e407a33',
+				storyparts: ['525a8422f6d0f87f0e407a34', '525a8422f6d0f87f0e407a35']
+
 			});
 
 			// Set the URL parameter

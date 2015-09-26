@@ -35,3 +35,5 @@ StorypartSchema.path('rows').validate(function (rows) {
 
 
 mongoose.model('Storypart', StorypartSchema);
+
+module.exports = StorypartSchema;
