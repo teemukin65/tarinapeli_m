@@ -18,6 +18,7 @@ module.exports = {
 			],
 			js: [
 				'public/lib/angular/angular.js',
+				'public/lib/angular/angular-locale_fi-fi.js',
 				'public/lib/angular-resource/angular-resource.js', 
 				'public/lib/angular-cookies/angular-cookies.js', 
 				'public/lib/angular-touch/angular-touch.js', 

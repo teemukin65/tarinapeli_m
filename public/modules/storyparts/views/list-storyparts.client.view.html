@@ -3,7 +3,7 @@
         <h1>Storyparts</h1>
     </div>
     <div class="list-group">
-        <a data-ng-repeat="storypart in storyparts" data-ng-href="#!/storyparts/{{storypart._id}}" class="list-group-item">
+        <a data-ng-repeat="storypart in storyparts" class="list-group-item">
 			<small class="list-group-item-text">
 				Posted on
 				<span data-ng-bind="storypart.created | date:'medium'"></span>

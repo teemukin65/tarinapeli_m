@@ -5,11 +5,11 @@
     <div class="col-md-12">
         <ng-form name="storyPartForm" class="form-group">
 
-            <div class="row form-group">
+            <div class="row ">
                 <input class="form-control" id="previousRowField" type="text" data-ng-model="lastLineOfPrevious.row"
                        disabled/>
             </div>
-            <div ng-repeat="(i,v) in [0,1,2]" class="row form-group">
+            <div ng-repeat="(i,v) in [0,1,2]" class="row">
 
                 <div class="controls">
                     <input placeholder="{{$index+1}} rivi" id="rowField{{$index+1}}"
@@ -17,8 +17,9 @@
                            required
                            data-ng-model="newStoryPartFields.rows[$index]" class="form-control" required>
                 </div>
-                <br/>
+
             </div>
+            <br/>
             <div class=" row form-group">
                 <input type="button" ng-click="create()" ng-disabled="storyPartForm.$invalid"
                        value="Seuraavan vuoro jatkaa" class="btn btn-info col-md-2"/>

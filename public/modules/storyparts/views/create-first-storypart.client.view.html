@@ -14,14 +14,12 @@
                            required
                            data-ng-model="newStoryPartFields.rows[$index]" class="form-control">
                 </div>
-                <br/>
             </div>
-
-
+            <br/>
             <div class="form-group">
                 <input type="button" ng-click="create()" ng-disabled="storyPartForm.$invalid"
                        name="firstPartSubmitButton" value="Seuraavan vuoro jatkaa"
-                       class="btn btn-default"/>
+                       class="btn btn-info btn-default"/>
             </div>
             <div data-ng-show="error" class="text-danger">
                 <strong data-ng-bind="error"></strong>

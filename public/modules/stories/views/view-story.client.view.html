@@ -1,6 +1,7 @@
 <section>
 	<div class="page-header">
-        <h1>Tarina aloitettu {{story.created | date }} klo {{story.created | date:'H.m'}}</h1>
+        <h1>Valmis tarina on tässä</h1>
+        Se on aloitettu {{story.created | date:'shortDate' }} klo {{story.created | date:'HH:mm'}}
 	</div>
     <div class="pull-right" data-ng-show=" ((authentication.user) && (authentication.user._id == story.user._id))">
 
@@ -9,11 +10,11 @@
 		</a>
 	</div>
 
-    <ul class="list-group" ng-repeat="part in story.storyparts">
+    <ul class="list-group storypart-margins" ng-repeat="part in story.storyparts">
 
         <li class="list-group-item">
 
-            <span class="badge"> Osa {{$index+1}}:kirjoitettu {{part.created| date:'H.m'}}</span>
+            <span class="badge"> Osan {{$index+1}}:kirjoitti {{part.user.displayName}} {{part.created| date:'HH:mm'}}</span>
 
 
             <div ng-repeat="row in part.rows track by $index">
@@ -24,4 +25,12 @@
 
 
     </ul>
+
+    <br/>
+    <div class="row" data-ng-show="authentication.user">
+        <p>
+            <a ui-sref="createStory.firstPart" class="btn btn-primary">Aloita uusi peli</a>
+        </p>
+    </div>
+
 </section>
