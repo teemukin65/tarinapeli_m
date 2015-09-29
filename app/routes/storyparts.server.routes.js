@@ -10,7 +10,7 @@ module.exports = function(app) {
 		.post(users.requiresLogin, storyparts.create);
 
 	app.route('/storyparts/:storypartId')
-		.get(storyparts.read)
+		.get(users.requiresLogin, storyparts.read)
 		.put(users.requiresLogin, storyparts.hasAuthorization, storyparts.update)
 		.delete(users.requiresLogin, storyparts.hasAuthorization, storyparts.delete);
 

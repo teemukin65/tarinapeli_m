@@ -5,6 +5,7 @@ var should = require('should'),
 	app = require('../../server'),
 	mongoose = require('mongoose'),
 	User = mongoose.model('User'),
+	Story = mongoose.model('Story'),
 	Storygame = mongoose.model('Storygame'),
 	agent = request.agent(app);
 
@@ -40,10 +41,18 @@ describe('Storygame CRUD tests', function() {
 			storygame = {
 				gameTitle: 'Storygame Name',
 				gameDescription: 'This is a longer description of common rules ',
+				gameAdmin: user._id,
 				gameStatus: 'defining',
-				players: [],
+				players: [
+					{
+						'user': user._id,
+						'inviteEmail': user.email,
+						'orderNumber': 1
+					}
+				],
 				stories: []
 			};
+
 
 			done();
 		});
@@ -59,6 +68,7 @@ describe('Storygame CRUD tests', function() {
 
 				// Get the userId
 				var userId = user.id;
+
 
 				// Save a new Storygame
 				agent.post('/storygames')
@@ -78,8 +88,13 @@ describe('Storygame CRUD tests', function() {
 								var storygames = storygamesGetRes.body;
 
 								// Set assertions
-								(storygames[0].user._id).should.equal(userId);
-								(storygames[0].name).should.match('Storygame Name');
+								(storygames).should.be.type('object').and.an.Array;
+								(storygames).should.not.be.empty;
+								//console.log('StoryGames list:'+JSON.stringify(storygames));
+								(storygames[0].gameAdmin).should.equal(userId);
+								(storygames[0].players[0].user).should.equal(userId);
+
+								(storygames[0].gameTitle).should.match('Storygame Name');
 
 								// Call the assertion callback
 								done();
@@ -100,7 +115,7 @@ describe('Storygame CRUD tests', function() {
 
 	it('should not be able to save Storygame instance if no name is provided', function(done) {
 		// Invalidate name field
-		storygame.name = '';
+		storygame.gameTitle = null;
 
 		agent.post('/auth/signin')
 			.send(credentials)
@@ -118,7 +133,7 @@ describe('Storygame CRUD tests', function() {
 					.expect(400)
 					.end(function(storygameSaveErr, storygameSaveRes) {
 						// Set message assertion
-						(storygameSaveRes.body.message).should.match('Please fill Storygame name');
+						(storygameSaveRes.body.message).should.match(/Please\ fill\ Storygame\ name/);
 						
 						// Handle Storygame save error
 						done(storygameSaveErr);
@@ -146,7 +161,7 @@ describe('Storygame CRUD tests', function() {
 						if (storygameSaveErr) done(storygameSaveErr);
 
 						// Update Storygame name
-						storygame.name = 'WHY YOU GOTTA BE SO MEAN?';
+						storygame.gameTitle = 'WHY YOU GOTTA BE SO MEAN?';
 
 						// Update existing Storygame
 						agent.put('/storygames/' + storygameSaveRes.body._id)
@@ -158,7 +173,7 @@ describe('Storygame CRUD tests', function() {
 
 								// Set assertions
 								(storygameUpdateRes.body._id).should.equal(storygameSaveRes.body._id);
-								(storygameUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+								(storygameUpdateRes.body.gameTitle).should.match('WHY YOU GOTTA BE SO MEAN?');
 
 								// Call the assertion callback
 								done();
@@ -187,7 +202,7 @@ describe('Storygame CRUD tests', function() {
 	});
 
 
-	it('should be able to get a single Storygame if not signed in', function(done) {
+	it('should not be able to get a single Storygame if not signed in', function (done) {
 		// Create new Storygame model instance
 		var storygameObj = new Storygame(storygame);
 
@@ -196,7 +211,7 @@ describe('Storygame CRUD tests', function() {
 			request(app).get('/storygames/' + storygameObj._id)
 				.end(function(req, res) {
 					// Set assertion
-					res.body.should.be.an.Object.with.property('gameTitle', storygame.gameTitle);
+					res.body.should.be.an.Object.with.property('message');
 
 					// Call the assertion callback
 					done();
@@ -266,6 +281,7 @@ describe('Storygame CRUD tests', function() {
 
 	afterEach(function(done) {
 		User.remove().exec();
+		Story.remove().exec();
 		Storygame.remove().exec();
 		done();
 	});

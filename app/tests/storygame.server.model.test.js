@@ -31,8 +31,15 @@ describe('Storygame Model Unit Tests:', function() {
 			storygame = new Storygame({
 				gameTitle: 'Storygame Name',
 				gameDescription: 'This is a longer description of common rules ',
+				gameAdmin: user._id,
 				gameStatus: 'defining',
-				players: [],
+				players: [
+					{
+						'user': user._id,
+						'inviteEmail': user.email,
+						'orderNumber': 1
+					}
+				],
 				stories: []
 			});
 

@@ -17,10 +17,12 @@ exports.create = function(req, res) {
 
 	storypart.save(function(err) {
 		if (err) {
+			console.log('storypart Save err:' + JSON.stringify(err))
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			console.log('storypart Save success, storypart:' + JSON.stringify(storypart))
 			res.jsonp(storypart);
 		}
 	});

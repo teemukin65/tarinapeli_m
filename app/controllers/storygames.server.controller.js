@@ -93,10 +93,22 @@ exports.listPlayers = function (req, res) {
 	res.jsonp(req.storygame.players);
 };
 
+
+exports.callPlayer = function (req, res) {
+	if (req.storygame.players && typeof req.storygame.players === 'object' &&
+		req.storygame.players.constructor === Array) {
+
+
+	}
+	;
+
+
+}
 /**
  * Storygame middleware
  */
 exports.storygameByID = function(req, res, next, id) {
+	//console.log('storygameByID: id:'+id);
 	Storygame.findById(id).populate('players stories', '-player.user.password -players.user.salt').exec(function (err, storygame) {
 		if (err) return next(err);
 		if (! storygame) return next(new Error('Failed to load Storygame ' + id));

@@ -19,7 +19,7 @@ var StorypartSchema = new Schema({
 		default: Date.now
 	},
 	user: {
-        required: 'Creator for Storypart required',
+		required: 'User is required for Story part',
 		type: Schema.ObjectId,
 		ref: 'User'
 	}

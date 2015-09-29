@@ -38,7 +38,8 @@ describe('Storypart CRUD tests', function() {
 		// Save a user to the test db and create new Storypart
 		user.save(function() {
 			storypart = {
-				name: 'Storypart Name'
+				rows: ['1st line', '2nd line', '3rd line'],
+				user: user._id
 			};
 
 			done();
@@ -75,7 +76,7 @@ describe('Storypart CRUD tests', function() {
 
 								// Set assertions
 								(storyparts[0].user._id).should.equal(userId);
-								(storyparts[0].name).should.match('Storypart Name');
+								(storyparts[0].rows).should.be.of.length(3);
 
 								// Call the assertion callback
 								done();
@@ -94,9 +95,9 @@ describe('Storypart CRUD tests', function() {
 			});
 	});
 
-	it('should not be able to save Storypart instance if no name is provided', function(done) {
-		// Invalidate name field
-		storypart.name = '';
+	it('should be able to save Storypart instance with logged in user id if no user is provided', function (done) {
+		// Invalidate user field
+		storypart.user = null;
 
 		agent.post('/auth/signin')
 			.send(credentials)
@@ -111,10 +112,12 @@ describe('Storypart CRUD tests', function() {
 				// Save a new Storypart
 				agent.post('/storyparts')
 					.send(storypart)
-					.expect(400)
+					.expect(200)
 					.end(function(storypartSaveErr, storypartSaveRes) {
 						// Set message assertion
-						(storypartSaveRes.body.message).should.match('Please fill Storypart name');
+						console.log('storypartSaveRes.body:' + JSON.stringify(storypartSaveRes.body));
+
+						(storypartSaveRes.body.user).should.match(userId);
 						
 						// Handle Storypart save error
 						done(storypartSaveErr);
@@ -142,7 +145,7 @@ describe('Storypart CRUD tests', function() {
 						if (storypartSaveErr) done(storypartSaveErr);
 
 						// Update Storypart name
-						storypart.name = 'WHY YOU GOTTA BE SO MEAN?';
+						storypart.rows[1] = 'WHY YOU GOTTA BE SO MEAN?';
 
 						// Update existing Storypart
 						agent.put('/storyparts/' + storypartSaveRes.body._id)
@@ -154,7 +157,7 @@ describe('Storypart CRUD tests', function() {
 
 								// Set assertions
 								(storypartUpdateRes.body._id).should.equal(storypartSaveRes.body._id);
-								(storypartUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+								(storypartUpdateRes.body.rows[1]).should.match('WHY YOU GOTTA BE SO MEAN?');
 
 								// Call the assertion callback
 								done();
@@ -183,7 +186,7 @@ describe('Storypart CRUD tests', function() {
 	});
 
 
-	it('should be able to get a single Storypart if not signed in', function(done) {
+	it('should not be able to get a single Storypart if not signed in', function (done) {
 		// Create new Storypart model instance
 		var storypartObj = new Storypart(storypart);
 
@@ -192,7 +195,7 @@ describe('Storypart CRUD tests', function() {
 			request(app).get('/storyparts/' + storypartObj._id)
 				.end(function(req, res) {
 					// Set assertion
-					res.body.should.be.an.Object.with.property('name', storypart.name);
+					res.body.should.be.an.Object.with.property('message', 'User is not logged in');
 
 					// Call the assertion callback
 					done();

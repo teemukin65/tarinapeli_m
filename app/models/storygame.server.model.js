@@ -53,7 +53,7 @@ var StorygameSchema = new Schema({
 	}],
 	stories: [{
 		type: Schema.ObjectId,
-		ref: 'Stories'
+		ref: 'Story'
 	}]
 
 });

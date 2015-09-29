@@ -14,7 +14,8 @@ module.exports = function(app) {
 		.put(users.requiresLogin, storygames.hasPlayerAuthorization, storygames.update)
 		.delete(users.requiresLogin, storygames.hasOwnerAuthorization, storygames.delete);
 	app.route('/storygames/:storygameId/players')
-		.get(users.requiresLogin, storygames.listPlayers);
+		.get(users.requiresLogin, storygames.listPlayers)
+		.post(users.requiresLogin, storygames.hasOwnerAuthorization, storygames.callPlayer);
 
 	// Finish by binding the Storygame middleware
 	app.param('storygameId', storygames.storygameByID);

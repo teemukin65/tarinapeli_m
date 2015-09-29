@@ -53,8 +53,8 @@ describe('Storypart Model Unit Tests:', function() {
 				done();
 			});
 		});
-		it('should be able to show error when try to save with too short row', function (done) {
-			storypart.rows[1] = 'oo';
+		it('should be able to show error when try to save with less than 3 rows', function (done) {
+			storypart.rows.splice(1, 1);
 			return storypart.save(function (err) {
 				should.exist(err);
 				done();
