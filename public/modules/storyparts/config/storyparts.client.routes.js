@@ -9,7 +9,7 @@ angular.module('storyparts').config(['$stateProvider',
 				url: '/storyparts',
 				templateUrl: 'modules/storyparts/views/list-storyparts.client.view.html'
 			}).
-			state('createStory.firstPart', {
+			state('gamePlaying.createStory.firstPart', {
 				url:'/storyparts/first',
 				resolve: {
 					previousPartEnd: function () {
@@ -19,10 +19,11 @@ angular.module('storyparts').config(['$stateProvider',
 				controller: 'StorypartsController',
 				templateUrl: 'modules/storyparts/views/create-first-storypart.client.view.html'
 			}).
-            state('createStory.nextPart', {
+			state('gamePlaying.createStory.nextPart', {
                 url: '/storyparts/:previousPartId/next',
                 resolve: {
                     previousPartEnd: function ($stateParams, Storyparts) {
+						if (!$stateParams.previousPartId)
                         return Storyparts.getPreviousEnd({storypartId: $stateParams.previousPartId}).$promise;
                     }
                 },

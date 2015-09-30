@@ -53,7 +53,10 @@
 		it('$scope.find() should create an array with at least one Storypart object fetched from XHR', inject(function(Storyparts) {
 			// Create sample Storypart using the Storyparts service
 			var sampleStorypart = new Storyparts({
-				name: 'New Storypart'
+				rows: ['1st line', '2nd line', '3rd line'],
+				created: 1443517616313,
+				user: '525a8422f6d0f87f0e407a33'
+
 			});
 
 			// Create a sample Storyparts array that includes the new Storypart

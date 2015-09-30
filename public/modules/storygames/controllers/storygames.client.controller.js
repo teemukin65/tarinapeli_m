@@ -1,10 +1,37 @@
 'use strict';
 
 // Storygames controller
-angular.module('storygames').controller('StorygamesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Storygames',
-	function($scope, $stateParams, $location, Authentication, Storygames) {
+angular.module('storygames').controller('StorygamesController', ['$scope', '$stateParams', '$state', '$location', 'Authentication', 'Storygames',
+	function ($scope, $stateParams, $state, $location, Authentication, Storygames) {
 		$scope.authentication = Authentication;
 
+		$scope.newGameDefinitions = {};
+		$scope.newGameDefinitions.gameAdmin = $scope.authentication.user._id;
+		$scope.newGameDefinitions.players = [];
+
+		$scope.isGameDefining = function () {
+			$state.includes('createGameDefining');
+		};
+		$scope.startGameDefinition = function () {
+			$scope.newGameDefinitions.players[0] = {
+				user: $scope.newGameDefinitions.gameAdmin,
+				inviteEmail: $scope.authentication.user.email,
+				orderNumber: 1
+			};
+			$state.go('createGameDefining');
+
+		};
+
+		$scope.storygameDefinitionReady = function () {
+			$scope.newGameDefinitions.created = Date.now;
+			var newStoryGame = new Storygames($scope.newGameDefinitions);
+			newStoryGame.$save(function (response) {
+					$state.go('createGameWaiting', {storygameId: response._id});
+				},
+				function (errorResponse) {
+					$scope.error = errorResponse.data.message;
+				});
+		};
 		// Create new Storygame
 		$scope.create = function() {
 			// Create new Storygame object

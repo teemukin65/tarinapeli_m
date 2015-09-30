@@ -9,13 +9,13 @@ angular.module('stories').config(['$stateProvider',
 				url: '/stories',
 				controller: 'StoriesController',
 				resolve: {
-					currentStory: function () {
-						return {};
-					}
+					currentStory: ['Stories', function (Stories) {
+						return Stories.query();
+					}]
 				},
 				templateUrl: 'modules/stories/views/list-stories.client.view.html'
 			}).
-			state('createStory', {
+			state('gamePlaying.createStory', {
 				url: '/stories/create',
 				controller: 'StoriesController',
 				resolve:{
@@ -32,7 +32,7 @@ angular.module('stories').config(['$stateProvider',
 
 
 			}).
-			state('viewStory', {
+			state('gamePlaying.viewStory', {
 				url: '/stories/:storyId',
 				controller: 'StoriesController',
 				resolve:{

@@ -88,9 +88,9 @@ describe('Storygame CRUD tests', function() {
 								var storygames = storygamesGetRes.body;
 
 								// Set assertions
-								(storygames).should.be.type('object').and.an.Array;
-								(storygames).should.not.be.empty;
-								//console.log('StoryGames list:'+JSON.stringify(storygames));
+								(storygames).should.be.type('object').and.an.Array(storygames);
+								//(storygames).should.not.empty;
+								console.log('StoryGames list:' + JSON.stringify(storygames));
 								(storygames[0].gameAdmin).should.equal(userId);
 								(storygames[0].players[0].user).should.equal(userId);
 
@@ -113,7 +113,7 @@ describe('Storygame CRUD tests', function() {
 			});
 	});
 
-	it('should not be able to save Storygame instance if no name is provided', function(done) {
+	it('should not be able to save Storygame instance if no gameTitle is provided', function (done) {
 		// Invalidate name field
 		storygame.gameTitle = null;
 

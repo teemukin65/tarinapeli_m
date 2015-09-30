@@ -98,12 +98,10 @@ exports.callPlayer = function (req, res) {
 	if (req.storygame.players && typeof req.storygame.players === 'object' &&
 		req.storygame.players.constructor === Array) {
 
+		console.log('callPlayer - player array OK:' + JSON.stringify(req.storygame.players));
 
 	}
-	;
-
-
-}
+};
 /**
  * Storygame middleware
  */

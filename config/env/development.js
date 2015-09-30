@@ -1,5 +1,7 @@
 'use strict';
 
+var pickupTransport = require('nodemailer-pickup-transport');
+var smtpTransport = require('nodemailer-smtp-transport');
 module.exports = {
 	db: 'mongodb://localhost/tarinapeli-m-dev',
 	app: {
@@ -31,13 +33,22 @@ module.exports = {
 		callbackURL: '/auth/github/callback'
 	},
 	mailer: {
-		from: process.env.MAILER_FROM || 'MAILER_FROM',
-		options: {
-			service: process.env.MAILER_SERVICE_PROVIDER || 'MAILER_SERVICE_PROVIDER',
+		from: process.env.MAILER_FROM || 'Tarinapeli Ylläpito <teemukin65@gmail.com>',
+		options: smtpTransport({
+			host: 'smtp.gmail.com',// is the hostname or IP address to connect to (defaults to 'localhost')
+			secure: true, // defines if the connection should use SSL (if true) or not (if false)
 			auth: {
-				user: process.env.MAILER_EMAIL_ID || 'MAILER_EMAIL_ID',
+				user: process.env.MAILER_EMAIL_ID || 'teemukin65@gmail.com'|| 'MAILER_EMAIL_ID',
 				pass: process.env.MAILER_PASSWORD || 'MAILER_PASSWORD'
-			}
-		}
+
+			},
+			//ignoreTLS: turns off STARTTLS support if true
+			//name: optional hostname of the client, used for identifying to the server
+			// connectionTimeout:  how many milliseconds to wait for the connection to establish
+			// greetingTimeout: how many milliseconds to wait for the greeting after connection is established
+			//socketTimeout: how many milliseconds of inactivity to allow
+			debug: true  // if true, the connection emits all traffic between client and server as 'log' events
+			//authMethod: // defines preferred authentication method, eg. 'PLAIN'
+		})
 	}
 };
