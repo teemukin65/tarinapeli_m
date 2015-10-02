@@ -2,8 +2,8 @@
 
 // Stories controller
 angular.module('stories').controller('StoriesController',
-    ['$scope', '$stateParams', '$location', 'Authentication', 'Users', 'Stories', 'Storyparts', 'currentStory',
-        function ($scope, $stateParams, $location, Authentication, Users, Stories, Storyparts, currentStory) {
+	['$scope', '$stateParams', '$location', 'Authentication', 'Users', 'Stories', 'Storyparts', 'currentGame', 'currentStory',
+		function ($scope, $stateParams, $location, Authentication, Users, Stories, Storyparts, currentGame, currentStory) {
 		$scope.authentication = Authentication;
 
 

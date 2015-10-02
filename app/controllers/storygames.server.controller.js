@@ -15,6 +15,10 @@ var mongoose = require('mongoose'),
 exports.create = function(req, res) {
 	var storygame = new Storygame(req.body);
 	storygame.user = req.user;
+	if (!storygame.gameAdmin) {
+		storygame.gameAdmin = storygame.user._id;
+	}
+
 
 	storygame.save(function(err) {
 		if (err) {

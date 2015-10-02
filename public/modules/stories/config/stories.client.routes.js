@@ -19,6 +19,9 @@ angular.module('stories').config(['$stateProvider',
 				url: '/stories/create',
 				controller: 'StoriesController',
 				resolve:{
+					currentGame: ['$stateParams', 'Storygames', function ($stateParams, Storygames) {
+						return Storygames.get({storygameId: $stateParams.storygameId});
+					}],
 					currentStory: ['Stories','Authentication', function(Stories, Authentication){
 						var story = new Stories ({
 							creator: Authentication.user._id,
@@ -32,7 +35,7 @@ angular.module('stories').config(['$stateProvider',
 
 
 			}).
-			state('gamePlaying.viewStory', {
+			state('gameShowing.viewStory', {
 				url: '/stories/:storyId',
 				controller: 'StoriesController',
 				resolve:{

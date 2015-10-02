@@ -23,8 +23,11 @@ angular.module('storyparts').config(['$stateProvider',
                 url: '/storyparts/:previousPartId/next',
                 resolve: {
                     previousPartEnd: function ($stateParams, Storyparts) {
-						if (!$stateParams.previousPartId)
-                        return Storyparts.getPreviousEnd({storypartId: $stateParams.previousPartId}).$promise;
+						if ($stateParams.previousPartId) {
+							return Storyparts.getPreviousEnd({storypartId: $stateParams.previousPartId}).$promise;
+						} else {
+							return {};
+						}
                     }
                 },
                 controller: 'StorypartsController',

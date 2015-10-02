@@ -1,49 +1,81 @@
 <section>
     <div class="page-header">
-        <h1>Tarinapeliesi tilanne</h1>
+        <h1>Uusi tarinapeli</h1>
+
+        <h3 ng-show="isGameDefining()">Kuvaile peli ja listaa mukaan kutsuttavat pelaajat</h3>
+
+        <h3 ng-show="!isGameDefining()">Odota kunnes riittävä määrä pelaajia on vastannut kutsuun</h3>
     </div>
     <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="storygameDefinitionReady()" novalidate>
-            <fieldset>
-                <div class="form-group">
-                    <label class="control-label" for="gameTitle">Pelin otsikko</label>
-                    <div class="controls">
-                        <input type="text" data-ng-model="newGameDefinitions.gameTitle" id="gameTitle"
-                               class="form-control"
-                               placeholder="Tarinapelin otsikko" required>
-                    </div>
-                    <label class="control-label" for="gameDescription">Ohjeesi tarinoinnille</label>
+        <form class="form-horizontal" novalidate>
+            <div class="form-group">
+                <label class="control-label" for="gameTitle">Pelin otsikko</label>
 
-                    <div class="controls">
-                        <input type="text" data-ng-model="newGameDefinitions.gameDescriptions" id="gameDescription"
-                               class="form-control"
-                               placeholder="Haluamasi tarinan piirteet">
-                    </div>
-
-                    <label class="control-label" for="gameAdmin">Tämän pelin pomo</label>
-
-                    <div class="controls">
-                        <input type="text" data-ng-model="authentication.user.displayName" id="gameAdmin"
-                               class="form-control"
-                               disabled/>
-                    </div>
-
-                    <label class="control-label" for="gamePlayers">Pelaajat</label>
-
-                    <div class="controls" ng-repeat="player in newGameDefinitions.players ">
-                        <input type="text" data-ng-model="player.inviteEmail" id="gamePlayers" class="form-control"
-                               disabled/>
-                    </div>
-
-
+                <div class="controls">
+                    <input type="text" data-ng-model="newGameDefinitions.gameTitle" id="gameTitle"
+                           class="form-control"
+                           placeholder="Tarinapelin otsikko" required>
                 </div>
-                <div class="form-group">
-                    <input type="submit" class="btn btn-default">
+                <label class="control-label" for="gameDescription">Ohjeesi tarinoinnille</label>
+
+                <div class="controls">
+                    <input type="text" data-ng-model="newGameDefinitions.gameDescription" id="gameDescription"
+                           class="form-control"
+                           placeholder="Haluamasi tarinan piirteet">
                 </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
-				</div>
-            </fieldset>
+
+                <label class="control-label" for="gameAdmin">Tämän pelin pomo</label>
+
+                <div class="controls">
+                    <input type="text" data-ng-model="authentication.user.displayName" id="gameAdmin"
+                           class="form-control"
+                           disabled/>
+                </div>
+
+                <h4>Pelaajat</h4>
+
+                <table class="table table-responsive table-hover">
+                    <tr>
+                        <th>Vuoronumero</th>
+                        <th>Sähköposti</th>
+                        <th>Kutsun tilanne</th>
+                    </tr>
+                    <tr ng-repeat="player in newGameDefinitions.players | orderBy:'orderNumber'"
+                        ng-class="{success:playerStatus(player)==='mukana',
+                                warning:playerStatus(player)==='kutsuttu',
+                                 error:playerStatus(player)==='kutsumaton'}">
+                        <td ng-class=""> {{player.orderNumber}}</td>
+                        <td ng-class=""><input type="text" ng-model="player.inviteEmail"
+                                               ng-disabled="playerStatus(player)==='mukana' || !isGameDefining()"
+                                               placeholder="Kutsuttavan sähköpostiosoite"/></td>
+                        <td>
+                            {{playerStatus(player)}}
+                        </td>
+
+
+                    </tr>
+
+                </table>
+
+                <button ng-show="isGameDefining() " ng-click="addPlayerInvitationEmail()" class="btn  btn-success"><span
+                        class="glyphicon glyphicon-plus-sign"></span></button>
+
+
+            </div>
+            <button ng-show="isGameDefining()" class="btn btn-success"
+                    ng-click="storygameDefinitionReady(newGameDefinitions)">
+                <span class="glyphicon glyphicon-ok"></span>
+                <span>Kutsuttavat pelaajat valittu</span>
+            </button>
+
+            <button ng-show="!isGameDefining()" class="btn btn-success"
+                    ng-click="storygameInvitationsReady(newGameDefinitions)">
+                <span class="glyphicon glyphicon-ok"></span>
+                <span>Peli aloitetaan nyt mukana olevilla</span>
+            </button>
+            <div data-ng-show="error" class="text-danger">
+                <strong data-ng-bind="error"></strong>
+            </div>
         </form>
     </div>
 </section>

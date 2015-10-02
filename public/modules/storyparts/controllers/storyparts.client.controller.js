@@ -13,7 +13,7 @@ angular.module('storyparts').controller('StorypartsController',
 
         // Create new Storypart, and redirect where needed
         // param: last -- if not falsy, move viewStory state.
-        $scope.create = function (last) {
+		$scope.createStorypart = function (last) {
 			// Create new Storypart object
 			var storypart = new Storyparts ({
 					rows:$scope.newStoryPartFields.rows,
@@ -24,15 +24,19 @@ angular.module('storyparts').controller('StorypartsController',
 			// Redirect after save
 			storypart.$save(function(response){
 				currentStory.storyparts.push(response._id);
-                currentStory.$update();
-                if (last) {
-                    $state.go('viewStory', {storyId: currentStory._id});
-                } else {
-                    $state.go('createStory.nextPart', {previousPartId: response._id});
-                }
+				currentStory.$update(function (updatedStory) {
+					if (last) {
+						$state.go('gameShowing.viewStory', {storyId: updatedStory._id});
+					} else {
+						$state.go('gamePlaying.createStory.nextPart', {previousPartId: response._id});
+					}
+					// Clear form fields
+					$scope.newStoryPartFields = {};
+				}, function (storyErrorResponse) {
+					$scope.error = storyErrorResponse.data.message;
+				});
 
-				// Clear form fields
-                $scope.newStoryPartFields = {};
+
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -54,7 +58,7 @@ angular.module('storyparts').controller('StorypartsController',
 			storypart.$update(function(response) {
 				currentStory.storyparts.push(response._id);
                 currentStory.update();
-				$state.go('createStory.nextPart',{previousPartId:response._id});
+				$state.go('gamePlaying.createStory.nextPart', {previousPartId: response._id});
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});

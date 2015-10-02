@@ -1,36 +1,75 @@
 'use strict';
 
 // Storygames controller
-angular.module('storygames').controller('StorygamesController', ['$scope', '$stateParams', '$state', '$location', 'Authentication', 'Storygames',
-	function ($scope, $stateParams, $state, $location, Authentication, Storygames) {
+angular.module('storygames').controller('StorygamesController',
+	['$scope', '$stateParams', '$state', '$location', 'Authentication', 'Storygames',
+		function ($scope, $stateParams, $state, $location, Authentication, Storygames) {
 		$scope.authentication = Authentication;
 
-		$scope.newGameDefinitions = {};
-		$scope.newGameDefinitions.gameAdmin = $scope.authentication.user._id;
-		$scope.newGameDefinitions.players = [];
 
-		$scope.isGameDefining = function () {
-			$state.includes('createGameDefining');
-		};
-		$scope.startGameDefinition = function () {
+			var resetNewGameDefinitionsToDefaults = function () {
+				$scope.newGameDefinitions = {};
+				$scope.newGameDefinitions.gameAdmin = $scope.authentication.user._id;
+				$scope.newGameDefinitions.players = [];
 			$scope.newGameDefinitions.players[0] = {
 				user: $scope.newGameDefinitions.gameAdmin,
 				inviteEmail: $scope.authentication.user.email,
 				orderNumber: 1
 			};
-			$state.go('createGameDefining');
+			};
 
+			if ($state.includes('createGameDefining')) {
+				resetNewGameDefinitionsToDefaults();
+			} else if ($stateParams.storygameId) {
+				$scope.newGameDefinitions = Storygames.get({
+					storygameId: $stateParams.storygameId
+				});
+			}
+
+			$scope.isGameDefining = function () {
+				return $state.includes('createGameDefining');
 		};
 
-		$scope.storygameDefinitionReady = function () {
-			$scope.newGameDefinitions.created = Date.now;
-			var newStoryGame = new Storygames($scope.newGameDefinitions);
+			$scope.playerStatus = function (player) {
+				if (player && player.inviteEmail) {
+					if (player.user) {
+						return 'mukana';
+					} else {
+						return 'kutsuttu';
+					}
+				} else {
+					return 'kutsumaton';
+				}
+			};
+
+			$scope.addPlayerInvitationEmail = function () {
+				$scope.newGameDefinitions.players.push({
+						orderNumber: ($scope.newGameDefinitions.players.length + 1),
+						inviteEmail: ''
+					}
+				);
+
+
+			};
+
+			$scope.storygameDefinitionReady = function (enteredNewGameDefinitions) {
+				enteredNewGameDefinitions.created = Date.now();
+				var newStoryGame = new Storygames(enteredNewGameDefinitions);
 			newStoryGame.$save(function (response) {
 					$state.go('createGameWaiting', {storygameId: response._id});
 				},
 				function (errorResponse) {
 					$scope.error = errorResponse.data.message;
 				});
+			};
+
+			$scope.storygameInvitationsReady = function (finalizedNewGameDefinitions) {
+
+				finalizedNewGameDefinitions.gameStatus = 'playing';
+				finalizedNewGameDefinitions.$update(function (gameInPlayingStatus) {
+					$state.go('gamePlaying.createStory.firstPart', {storygameId: finalizedNewGameDefinitions._id});
+				});
+
 		};
 		// Create new Storygame
 		$scope.create = function() {
