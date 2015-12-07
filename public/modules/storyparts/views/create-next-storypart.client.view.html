@@ -21,10 +21,11 @@
             </div>
             <br/>
             <div class=" row form-group">
-                <input type="button" ng-click="createStorypart()" ng-disabled="storyPartForm.$invalid"
-                       value="Seuraavan vuoro jatkaa" class="btn btn-info col-md-2"/>
-                <input type="button" value="Tarina on valmis" class="btn btn-success col-md-offset-8 col-md-2"
-                       data-ng-click="create(true)"
+                <input type="button" ng-click="createStorypart('storyIsFinalized'===false )"
+                       ng-disabled="storyPartForm.$invalid"
+                       value="Seuraavan vuoro jatkaa" class="btn btn-info col-md-3"/>
+                <input type="button" value="Tarina on valmis" class="btn btn-success col-md-offset-6 col-md-3"
+                       data-ng-click="createStorypart('storyIsFinalized')"
                        ng-disabled=" (storyPartForm.$invalid  || story.creator !== authentication.user._id) "/>
             </div>
 

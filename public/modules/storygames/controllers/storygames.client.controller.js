@@ -2,9 +2,11 @@
 
 // Storygames controller
 angular.module('storygames').controller('StorygamesController',
-	['$scope', '$stateParams', '$state', '$location', 'Authentication', 'Storygames',
-		function ($scope, $stateParams, $state, $location, Authentication, Storygames) {
-		$scope.authentication = Authentication;
+	['$scope', '$stateParams', '$state', '$location', 'Authentication',
+		'Storygames', 'Stories', 'currentGame',
+		function ($scope, $stateParams, $state, $location, Authentication, Storygames, Stories, currentGame) {
+			$scope.authentication = Authentication;
+			$scope.currentGame = currentGame;
 
 
 			var resetNewGameDefinitionsToDefaults = function () {
@@ -66,8 +68,24 @@ angular.module('storygames').controller('StorygamesController',
 			$scope.storygameInvitationsReady = function (finalizedNewGameDefinitions) {
 
 				finalizedNewGameDefinitions.gameStatus = 'playing';
-				finalizedNewGameDefinitions.$update(function (gameInPlayingStatus) {
-					$state.go('gamePlaying.createStory.firstPart', {storygameId: finalizedNewGameDefinitions._id});
+				//TODO: Create story for the game initiator player, others get their story from the server
+				var storyForGameAdmin = new Stories(
+					{
+						'created': Date.now(),
+						'creator': finalizedNewGameDefinitions.gameAdmin,
+						'currentWriter': finalizedNewGameDefinitions.gameAdmin,
+						'storyparts': []
+					}
+				);
+
+				storyForGameAdmin.$save(function (savedStory) {
+					finalizedNewGameDefinitions.stories = [savedStory._id];
+					finalizedNewGameDefinitions.$update(function (gameInPlayingStatus) {
+						$state.go('gamePlaying.createStory.firstPart', {
+							storygameId: finalizedNewGameDefinitions._id,
+							storyId: savedStory._id
+						});
+					});
 				});
 
 		};

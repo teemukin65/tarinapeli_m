@@ -1,0 +1,38 @@
+@startuml
+scale 350 width
+[*] --> home
+home: view: home.client.view.html
+
+home --> listYourGames: login
+listYourGames --> createGameDefining: link: uuden tarinapelin
+createGameDefining --> createGameWaiting: pelaajat valittu
+createGameWaiting --> gamePlaying: Aloitetaan peli
+
+state gamePlaying {
+[*] --> gamePlaying.createStory
+    state gamePlaying.createStory {
+    [*] --> gamePlaying.createStory.firstPart
+      state gamePlaying.createStory.firstPart{
+      }
+      gamePlaying.createStory.firstPart --> gamePlaying.createStory.nextPart
+
+      state gamePlaying.createStory.nextPart{
+      }
+      gamePlaying.createStory.nextPart --> gamePlaying.createStory.nextPart
+
+
+
+
+
+
+
+    }
+
+
+
+}
+
+
+
+
+@enduml

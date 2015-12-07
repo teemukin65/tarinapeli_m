@@ -7,6 +7,17 @@ Alpha MeanJs version of the game implementation..
 
 Further game and development info at Github  https://github.com/teemukin65/tarinapeli_m
 
+## Design
+### UI states
+
+@startuml
+
+[*]--> Home
+
+
+@enduml
+
+
 ## Credits
 Used MEANjs.org as basis for this implementation
 

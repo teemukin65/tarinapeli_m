@@ -44,8 +44,8 @@ angular.module('stories').controller('StoriesController',
 			});
 
 			// Redirect after save
-			newStory.$save(function(response) {
-				$location.path('stories/' + response._id+'/storyparts/first');
+			newStory.$save(function (savedStory) {
+				$location.path('stories/' + savedStory._id + '/storyparts/first');
 
 				// Clear form fields
 				$scope.name = '';

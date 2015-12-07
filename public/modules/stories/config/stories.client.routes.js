@@ -14,26 +14,39 @@ angular.module('stories').config(['$stateProvider',
 					}]
 				},
 				templateUrl: 'modules/stories/views/list-stories.client.view.html'
-			}).
+			}).			   			   			   			               			   			               			   			   			   			   			   			   			   			   			   			//TDO: combine the createStory and continueStory states
 			state('gamePlaying.createStory', {
-				url: '/stories/create',
+				url: '/stories/:storyId/creating',
 				controller: 'StoriesController',
-				resolve:{
-					currentGame: ['$stateParams', 'Storygames', function ($stateParams, Storygames) {
-						return Storygames.get({storygameId: $stateParams.storygameId});
-					}],
-					currentStory: ['Stories','Authentication', function(Stories, Authentication){
-						var story = new Stories ({
-							creator: Authentication.user._id,
-							currentWriter: Authentication.user._id,
-							created: Date.now(),
-						});
-						return story.$save();
-					}]
+				resolve: {
+					currentStory: ['$stateParams', 'Storygames', 'Stories', 'Authentication', 'currentGame',
+						function ($stateParams, Storygames, Stories, Authentication, currentGame) {
+							if ($stateParams.storyId) {
+								return Stories.get({'storyId': $stateParams.storyId});
+							} else {  // No storyId provided for the state
+								currentGame.$promise.then(function (fetchedGame) {
+									if (fetchedGame.stories &&
+										angular.isArray(fetchedGame.stories) &&
+										fetchedGame.stories.length > 0) { // find story where current user is the current writer
+										angular.forEach(fetchedGame.stories, function (story) {
+											if (story.currentWriter === Authentication.user._id) {
+												return story;
+											}
+										});
+									} else { // No story created yet for the game.
+										// TODO: use this state in spite of the createStory
+										return Stories.save([], {
+											creator: Authentication.user._id,
+											currentWriter: Authentication.user._id,
+											storyParts: []
+										});
+									}
+								});
+								return null;  // No story currently available for you to write
+							}
+						}]
 				},
 				templateUrl: 'modules/stories/views/edit-story.client.view.html'
-
-
 			}).
 			state('gameShowing.viewStory', {
 				url: '/stories/:storyId',

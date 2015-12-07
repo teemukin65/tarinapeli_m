@@ -1,4 +1,4 @@
-<section data-ng-controller="StorygamesController" data-ng-init="findOne()">
+<section>
 	<div class="page-header">
 		<h1 data-ng-bind="storygame.name"></h1>
 	</div>
@@ -10,12 +10,17 @@
 			<i class="glyphicon glyphicon-trash"></i>
 		</a>
 	</div>
+	<h2>Pelille annettu otsikko: {{currentGame.gameTitle}}</h2>
+
+	<div>{{currentGame.gameDescription}}</div>
 	<small>
+
 		<em class="text-muted">
-			Posted on
-			<span data-ng-bind="storygame.created | date:'mediumDate'"></span>
-			by
-			<span data-ng-bind="storygame.user.displayName"></span>
+			Pelin aloitti <span data-ng-bind="currentGame.players[0].inviteEmail"></span>
+			<span data-ng-bind="currentGame.created | date:'mediumDate'"></span>
+
+
 		</em>
 	</small>
+	<ui-view></ui-view>
 </section>

@@ -12,21 +12,43 @@ angular.module('storygames').config(['$stateProvider',
 			state('createGameDefining', {
 				url: '/storygames/definition',
 				controller: 'StorygamesController',
-				resolve: {},
+				resolve: {
+					currentGame: function () {
+						return {};
+					}
+				},
 				templateUrl: 'modules/storygames/views/create-storygame.client.view.html'
 
 			}).
 			state('createGameWaiting', {
 				url: '/storygames/:storygameId/invitations',
+				resolve: {
+					currentGame: ['$stateParams', 'Storygames', function ($stateParams, Storygames) {
+						return Storygames.get({storygameId: $stateParams.storygameId});
+					}]
+
+				},
 				controller: 'StorygamesController',
 				templateUrl: 'modules/storygames/views/create-storygame.client.view.html'
 			}).
 			state('gamePlaying', {
 				url: '/storygames/:storygameId',
+				controller: 'StorygamesController',
+				resolve: {
+					currentGame: ['$stateParams', 'Storygames', function ($stateParams, Storygames) {
+						return Storygames.get({storygameId: $stateParams.storygameId});
+					}]
+				},
 				templateUrl: 'modules/storygames/views/play-storygame.client.view.html'
 			}).
 			state('gameShowing', {
 				url: '/storygames/:storygameId',
+				controller: 'StorygamesController',
+				resolve: {
+					currentGame: ['$stateParams', 'Storygames', function ($stateParams, Storygames) {
+						return Storygames.get({storygameId: $stateParams.storygameId});
+					}]
+				},
 				templateUrl: 'modules/storygames/views/view-storygame.client.view.html'
 
 			}).

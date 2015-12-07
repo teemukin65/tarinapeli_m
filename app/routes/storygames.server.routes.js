@@ -4,6 +4,7 @@ module.exports = function(app) {
 	var users = require('../../app/controllers/users.server.controller');
 	var storygames = require('../../app/controllers/storygames.server.controller');
 
+
 	// Storygames Routes
 	app.route('/storygames')
 		.get(storygames.list)
@@ -17,6 +18,11 @@ module.exports = function(app) {
 		.get(users.requiresLogin, storygames.listPlayers)
 		.post(users.requiresLogin, storygames.hasOwnerAuthorization, storygames.callPlayer);
 
+	app.route('/storygames/:storygameId/players/:inviteEmail/currentStory')
+		.get(users.requiresLogin, storygames.getStoryForPlayer);
+
+
 	// Finish by binding the Storygame middleware
 	app.param('storygameId', storygames.storygameByID);
+	app.param('inviteEmail', storygames.currentStoryByInviteEmail);
 };

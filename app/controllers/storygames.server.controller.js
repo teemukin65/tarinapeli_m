@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Storygame = mongoose.model('Storygame'),
+	Story = mongoose.model('Story'),
 	Users = mongoose.model('User'),
 	_ = require('lodash');
 
@@ -45,6 +46,8 @@ exports.update = function(req, res) {
 	var storygame = req.storygame ;
 
 	storygame = _.extend(storygame , req.body);
+	//TODO: Initiate calling of new players
+	//
 
 	storygame.save(function(err) {
 		if (err) {
@@ -106,16 +109,58 @@ exports.callPlayer = function (req, res) {
 
 	}
 };
+
+exports.getStoryForPlayer = function (req, res) {
+	res.jsonp(req.currentPlayerStory);
+};
 /**
  * Storygame middleware
  */
 exports.storygameByID = function(req, res, next, id) {
-	//console.log('storygameByID: id:'+id);
+	console.log('storygameByID: id:' + id);
 	Storygame.findById(id).populate('players stories', '-player.user.password -players.user.salt').exec(function (err, storygame) {
-		if (err) return next(err);
-		if (! storygame) return next(new Error('Failed to load Storygame ' + id));
-		req.storygame = storygame ;
+		if (err) {
+			return next(err);
+		}
+		if (!storygame) {
+			return next(new Error('Failed to load Storygame ' + id));
+		}
+
+		req.storygame = storygame;
 		next();
+	});
+};
+
+exports.currentStoryByInviteEmail = function (req, res, next, inviteEmail) {
+	console.log('currentStoryByInviteEmail - inviteEmail:' + inviteEmail);
+	Storygame.find({'players.inviteEmail': inviteEmail}).populate('players stories').exec(function (err, storygamesForEmail) {
+
+		if (err) {
+			return next(err);
+		}
+		if (!storygamesForEmail) {
+			return next(new Error('Failed to load Storygame according to invite email: ' + inviteEmail));
+		}
+		Story.find().
+			//FIXME: storygamesForEmail is an array, and may already be populated above. No proof yet...
+			where('_id').in(storygamesForEmail.stories).
+			//populate('storyparts currentWriter').
+			exec(function (err, gameStories) {
+				if (err) {
+					return next(err);
+				}
+				if (gameStories) {
+					console.log('found stories:' + JSON.stringify(gameStories) + ' from Game:' + storygamesForEmail._id);
+
+					req.currentPlayerStory = _.find(gameStories, function (story) {
+						return story.currentWriter.email === inviteEmail;
+					});
+					next();
+				} else {
+					return next(new Error('Failed to  find story from storyGame:' + storygamesForEmail._id +
+						' with invite email: ' + inviteEmail));
+				}
+			});
 	});
 };
 
